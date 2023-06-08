@@ -1,0 +1,46 @@
+version: '3'
+services:
+  warehouse:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${WAREHOUSE_DB_PASSWORD}
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+
+  airflow-webserver:
+    image: apache/airflow:2.6.1
+    command: bash -c "airflow db init && airflow webserver"
+    environment: &airflow_common_env
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////home/airflow/airflow.db
+      - AIRFLOW__CONN__SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@localhost/carepay
+      - AIRFLOW__CONN__TARGET_WAREHOUSE=postgres://postgres:${WAREHOUSE_DB_PASSWORD}@localhost:5432/postgres
+    volumes:
+      - ./dags:/opt/airflow/dags
+    ports:
+      - "8080:8080"
+    depends_on:
+      - warehouse
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.1
+    command: bash -c "airflow db init && airflow scheduler"
+    environment: *airflow_common_env
+    depends_on:
+      - airflow-webserver
+
+  metabase:
+    image: metabase/metabase:v0.46.4
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=postgres
+      - MB_DB_PORT=5432
+      - MB_DB_USER=postgres
+      - MB_DB_PASS=${WAREHOUSE_DB_PASSWORD}
+      - MB_DB_HOST=warehouse
+    depends_on:
+      - airflow-scheduler
+
