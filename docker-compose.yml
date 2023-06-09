@@ -1,23 +1,29 @@
-version: '3'
+version: "3"
 services:
   warehouse:
-    image: postgres:13
+    image: postgres:15
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${WAREHOUSE_DB_PASSWORD}
       - POSTGRES_DB=postgres
+    volumes:
+      - ./scripts/postgres:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
 
   airflow-webserver:
     image: apache/airflow:2.6.1
-    command: bash -c "airflow db init && airflow webserver"
+    command: bash -c "airflow db init &&
+                      airflow users create --username admin --firstname _ --lastname _ --email admin@example.com --role Admin --password ${AIRFLOW_WWW_PASSWORD} &&
+                      airflow webserver"
+                      
     environment: &airflow_common_env
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////home/airflow/airflow.db
       - AIRFLOW__CONN__SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@localhost/carepay
-      - AIRFLOW__CONN__TARGET_WAREHOUSE=postgres://postgres:${WAREHOUSE_DB_PASSWORD}@localhost:5432/postgres
+      - AIRFLOW__CONN__TARGET_WAREHOUSE=postgres://postgres:${WAREHOUSE_DB_PASSWORD}@localhost:5432/staging
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./dags:/home/airflow/dags
     ports:
       - "8080:8080"
     depends_on:
@@ -29,18 +35,4 @@ services:
     environment: *airflow_common_env
     depends_on:
       - airflow-webserver
-
-  metabase:
-    image: metabase/metabase:v0.46.4
-    ports:
-      - "3000:3000"
-    environment:
-      - MB_DB_TYPE=postgres
-      - MB_DB_DBNAME=postgres
-      - MB_DB_PORT=5432
-      - MB_DB_USER=postgres
-      - MB_DB_PASS=${WAREHOUSE_DB_PASSWORD}
-      - MB_DB_HOST=warehouse
-    depends_on:
-      - airflow-scheduler
 
