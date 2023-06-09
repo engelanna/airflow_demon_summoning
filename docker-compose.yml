@@ -1,11 +1,13 @@
 version: "3"
 services:
   warehouse:
-    image: postgres:15
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${WAREHOUSE_DB_PASSWORD}
       - POSTGRES_DB=postgres
+    image: postgres:15
+    ports:
+      - "5432:5432"
     volumes:
       - ./scripts/postgres:/docker-entrypoint-initdb.d/
 
@@ -17,7 +19,7 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////home/airflow/airflow.db
       - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
       - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
-      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgres://postgres:${WAREHOUSE_DB_PASSWORD}@localhost:5432/postgres
+      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
     image: apache/airflow:2.6.1
     network_mode: host
     volumes:

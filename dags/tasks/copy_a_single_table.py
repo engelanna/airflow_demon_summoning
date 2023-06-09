@@ -12,6 +12,6 @@ def copy_a_single_table(table_name: str):
     )
 
     postgres_hook.insert_rows(
-        table=table_name.lower(),
         rows=mysql_hook.get_records(f"SELECT * FROM {table_name}"),
+        table=f"staging.{table_name.lower()}",
     )
