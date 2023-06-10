@@ -7,14 +7,14 @@ create table staging.claim (
     program_id int,
     status varchar(25),
     treatment_id int,
-    type varchar(25),
+    type varchar(25)
 );
 
 create table staging.invoice (
     date_created timestamp,
     id int primary key,
     status varchar(25),
-    treatment_id int,
+    treatment_id int
 );
 
 create table staging.invoice_item (
@@ -24,7 +24,7 @@ create table staging.invoice_item (
     id int primary key,
     invoice_id int,
     status varchar(25),
-    product_id int,
+    product_id int
 );
 
 create table staging.treatment (
@@ -36,5 +36,5 @@ create table staging.treatment (
     program_id int,
     provider_id int,
     status varchar(25),
-    type varchar(25),
+    type varchar(25)
 );
