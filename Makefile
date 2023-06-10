@@ -12,4 +12,3 @@ down:
 
 boom:
 	down && docker rmi postgres:15 mysql:5:6 --force
-
