@@ -3,7 +3,6 @@
     in a single spot, and you get shared dimensions.
 */
 
-/*
 
 create table analytics.dim_claim_lifecycle (
     date_claim_created timestamp,
@@ -17,7 +16,5 @@ create table analytics.dim_claim_lifecycle (
     dim_program_id int,
     dim_provider_id int,
     dim_treatment_id int,
-    id int primary key,
+    id int primary key
 );
-
-*/

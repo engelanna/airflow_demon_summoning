@@ -1,7 +1,4 @@
-Requirements say "ETL", so no staging (that's ELT) and no dbt (also ELT).
-
-Before productionizing:
-	- change Airflow metadata db from sqlite
+.env file link: https://drive.google.com/file/d/1Tb8YevcJJIUhJhc0B4mezwQSI1jRCM-U/view?usp=drive_link
 
 Note that each value in the activity_type
 column has its own timestamp. This will be important for the fourth part.
