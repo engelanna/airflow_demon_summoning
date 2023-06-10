@@ -3,7 +3,6 @@
     Slices across dimensions are available, should we need it.
 */
 
-
 create table analytics.fct_claim_activity (
     activity_date timestamp,
     activity_status varchar(25),

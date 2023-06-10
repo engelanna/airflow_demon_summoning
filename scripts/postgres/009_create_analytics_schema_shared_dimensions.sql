@@ -1,8 +1,7 @@
 /*
-	Gather all the interesting timestamps across a business process' lifetime
+    Gather all the interesting timestamps across a business process' lifetime
     in a single spot, and you get shared dimensions.
 */
-
 
 create table analytics.dim_claim_lifecycle (
     date_claim_created timestamp,

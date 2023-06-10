@@ -3,8 +3,19 @@
 
 
 ## The approach
+- _We make the complex simple_ @ [What CarePay values](https://www.carepay.com/careers-at-carepay)
 - data matters more than infra
-- simplify (CarePay values)
+  - the warehouse has been split into schemas à la Data Vault:
+    - `staging` is just a landing area
+      - the one-off smallish ingress doesn't even require partitioning
+        - partitioning would be _pro_, but mind the crazy time horizon
+    - `core` is indexed
+      - PKs
+      - B-tree indexes on `timestamp` columns (:wave: to our analyst friends)
+    - `analytics` has just the schema
+      - but withhold judgement until you've seen it ([1](https://github.com/engelanna/carepay_engelanna/blob/main/scripts/postgres/007_create_analytics_schema_standard_dimensions.sql), [2](https://github.com/engelanna/carepay_engelanna/blob/main/scripts/postgres/008_create_analytics_schema_activity_tables.sql), [3](https://github.com/engelanna/carepay_engelanna/blob/main/scripts/postgres/009_create_analytics_schema_shared_dimensions.sql))
+
+  - `analytics` schema sponsored by [Kimball](https://rlv.zcache.com/kim_jong_un_north_korean_leader_golf_balls-r8863a21cf81b4e9491467af2988d1842_efkk9_630.jpg?rlvnet=1&view_padding=%5B285%2C0%2C285%2C0%5D)
 <hr>
 
 
@@ -25,7 +36,15 @@
   wget https://tinyurl.com/wzxa3zh3 --output-document .env  # passwords
   make up
 ```
+Once the terminal pipes down a bit, you can inspect the databases.
 <hr>
+
+
+## Inspect databases
+
+
+  - the schemas can be inspected right after startup (terminal still scrolling)
+  - the data is loaded gradually 
 
 
 ## Uninstall
@@ -44,8 +63,6 @@ or
 ## Answers to CarePay questions
 ###
 
-- [x]  
-​The goal of this challenge is to extract data from a source system, a MySQL database, and move it to a single source of truth system. In the single source of truth system the data should be cleaned and should be structured in a way that would allow for easy and low-latency queries. What that centralised single source of truth system is is up to you. For example, it could be a cloud data warehouse such as Redshift or BigQuery, a Object Storage such as S3 with AWS Athena as a query layer, or it could be an on-premise NoSQL database. The decision is up to you.
 ​
 When you submit the challenge we expect to see an ETL system that moves data out of the MySQL database, cleans and transforms the data and exposes the data in a single source of truth system. You can use a scripting language of your choice, preferable python. Also, we should be able to reproduce your solution. That means there should be some instructions on how to run your ETL system, ideally in the form of some scripts. Any infrastructure components should also be reproducible. We expect a bash script/docker-compose file/your framework of choice to be able to reproduce your setup. Furthermore, a simple markdown file should be added which describes the following:
 ​
@@ -133,3 +150,7 @@ time is very essentially. A table is Dim_orders lets the data scientists write v
 for each order id (since there is only 1 row per ord
 
 ## Features
+
+ADD COLABORATORS
+  https://github.com/barbarabarbosa
+  https://github.com/team-carepay

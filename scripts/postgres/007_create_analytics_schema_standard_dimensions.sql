@@ -3,7 +3,6 @@
     That includes degenerate dimensions: program, provider.
 */
 
-
 create table analytics.dim_claim (
     currency varchar(4),
     date_created timestamp,
