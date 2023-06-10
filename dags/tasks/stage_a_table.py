@@ -5,7 +5,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 @task
-def copy_a_single_table(table_name: str):
+def stage_a_table(table_name: str):
     mysql_hook = MySqlHook(Connection.get_connection_from_secrets("SOURCE_DB").conn_id)
     postgres_hook = PostgresHook(
         Connection.get_connection_from_secrets("TARGET_WAREHOUSE").conn_id

@@ -1,1 +1,1 @@
-from .copy_a_single_table import copy_a_single_table
+from .stage_a_table import stage_a_table
