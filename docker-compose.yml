@@ -1,5 +1,16 @@
 version: "3"
 services:
+  transactional_db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${TRANSACTIONAL_DB_PASSWORD}
+      - MYSQL_DATABASE=carepay
+    image: mysql:5.6
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/data
+      - ./scripts/mysql:/docker-entrypoint-initdb.d/
+
   warehouse:
     environment:
       - POSTGRES_USER=postgres
@@ -11,9 +22,10 @@ services:
     volumes:
       - ./scripts/postgres:/docker-entrypoint-initdb.d/
 
-  airflow-scheduler:
+  airflow_scheduler:
     command: bash -c "airflow db init && airflow scheduler"
     depends_on:
+      - transactional_db
       - warehouse
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////home/airflow/airflow.db
