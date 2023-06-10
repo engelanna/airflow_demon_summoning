@@ -1,1 +1,1 @@
-CREATE SCHEMA staging AUTHORIZATION postgres;
+create schema staging authorization postgres;
