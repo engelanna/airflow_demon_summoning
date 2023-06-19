@@ -1,5 +1,41 @@
 version: "3"
 services:
+  airflow_metadata_db:
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=${AIRFLOW_METADATA_DB_PASSWORD}
+      - POSTGRES_DB=airflow
+    image: postgres:15
+    ports:
+      - "5433:5432"
+
+  airflow_scheduler:
+    command: bash -c "airflow db init && airflow scheduler"
+    depends_on:
+      - airflow_metadata_db
+      - transactional_db
+      - warehouse
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
+      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
+    image: apache/airflow:2.6.1
+    network_mode: host
+    volumes:
+      - ./dags:/opt/airflow/dags
+
+  dbt:
+    entrypoint: "/usr/bin/tail -f /dev/null"
+    environment:
+      - WAREHOUSE_DB_PASSWORD
+    image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
+    network_mode: host
+    volumes:
+      - ./dbt/profiles.yml:/root/.dbt/profiles.yml
+      - ./dbt/dbt_project.yml:/usr/app/dbt/dbt_project.yml
+
   transactional_db:
     environment:
       - MYSQL_ROOT_PASSWORD=${TRANSACTIONAL_DB_PASSWORD}
@@ -21,28 +57,3 @@ services:
       - "5432:5432"
     volumes:
       - ./scripts/postgres:/docker-entrypoint-initdb.d/
-
-  airflow_scheduler:
-    command: bash -c "airflow db init && airflow scheduler"
-    depends_on:
-      - transactional_db
-      - warehouse
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////home/airflow/airflow.db
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-      - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
-      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
-    image: apache/airflow:2.6.1
-    network_mode: host
-    volumes:
-      - ./dags:/opt/airflow/dags
-
-  dbt:
-    entrypoint: "/usr/bin/tail -f /dev/null"
-    environment:
-      - WAREHOUSE_DB_PASSWORD
-    image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
-    network_mode: host
-    volumes:
-      - ./dbt/profiles.yml:/root/.dbt/profiles.yml
-      - ./dbt/dbt_project.yml:/usr/app/dbt/dbt_project.yml

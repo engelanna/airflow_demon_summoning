@@ -10,10 +10,9 @@ with DAG(
     start_date=datetime(1822, 9, 7),
     schedule_interval="@once",
 ) as _:
-    (
-        stage_a_table("CLAIM")
-        >> stage_a_table("INVOICE")
-        >> stage_a_table("INVOICE_ITEM")
-        >> stage_a_table("TREATMENT")
-        >> TriggerDagRunOperator(trigger_dag_id="from_staging_to_core_within_postgres", task_id="_")
+    [
+        stage_a_table(table)
+        for table in ("CLAIM", "INVOICE", "INVOICE_ITEM", "TREATMENT")
+    ] >> TriggerDagRunOperator(
+        trigger_dag_id="from_staging_to_core_within_postgres", task_id="_"
     )

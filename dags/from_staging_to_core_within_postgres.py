@@ -10,9 +10,7 @@ with DAG(
     start_date=datetime(1822, 9, 7),
     schedule_interval=None,
 ) as _:
-    (
-        move_a_table_from_staging_to_core("claim")
-        >> move_a_table_from_staging_to_core("invoice")
-        >> move_a_table_from_staging_to_core("invoice_item")
-        >> move_a_table_from_staging_to_core("treatment")
-    )
+    [
+        move_a_table_from_staging_to_core(table)
+        for table in ("claim", "invoice", "invoice_item", "treatment")
+    ]
