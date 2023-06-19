@@ -30,7 +30,6 @@ create table core.claim (
 create table core.treatment (
     id int primary key,
     status varchar(25),
-    type varchar(25),
     date_created timestamp,
     date_modified timestamp,
     date_submitted timestamp, 

@@ -4,7 +4,7 @@ from airflow.providers.mysql.hooks.mysql import MySqlHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
-@task(task_id=f"import_into_staging")
+@task
 def import_table_into_staging(table_name: str):
     mysql_hook = MySqlHook(Connection.get_connection_from_secrets("SOURCE_DB").conn_id)
     postgres_hook = PostgresHook(
