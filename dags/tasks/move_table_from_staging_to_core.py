@@ -4,7 +4,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 @task
-def move_a_table_from_staging_to_core(table_name: str):
+def move_table_from_staging_to_core(table_name: str):
     postgres_hook = PostgresHook(
         Connection.get_connection_from_secrets("TARGET_WAREHOUSE").conn_id
     )

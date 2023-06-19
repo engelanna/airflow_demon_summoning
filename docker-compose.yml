@@ -1,5 +1,36 @@
 version: "3"
 services:
+  airflow_scheduler:
+    command: bash -c "airflow db init && airflow scheduler"
+    depends_on:
+      - airflow_metadata_db
+      - transactional_db
+      - warehouse
+    environment:
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
+      - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
+      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
+    image: apache/airflow:2.6.1
+    network_mode: host
+    volumes:
+      - ./dags:/opt/airflow/dags
+
+  airflow_webserver:
+    command: bash -c "airflow db init &&
+                      airflow users create --role Admin --username admin --password ${AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD} --email admin@example.com --firstname _ --lastname _ &&
+                      airflow webserver"
+    depends_on:
+      - airflow_metadata_db
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
+      - AIRFLOW__WEBSERVER__AUTHENTICATE=True
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD
+    image: apache/airflow:2.6.1
+    network_mode: host
+
   airflow_metadata_db:
     environment:
       - POSTGRES_USER=airflow
@@ -8,23 +39,6 @@ services:
     image: postgres:15
     ports:
       - "5433:5432"
-
-  airflow_scheduler:
-    command: bash -c "airflow db init && airflow scheduler"
-    depends_on:
-      - airflow_metadata_db
-      - transactional_db
-      - warehouse
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
-      - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
-    image: apache/airflow:2.6.1
-    network_mode: host
-    volumes:
-      - ./dags:/opt/airflow/dags
 
   dbt:
     entrypoint: "/usr/bin/tail -f /dev/null"

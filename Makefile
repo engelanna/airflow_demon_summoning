@@ -9,8 +9,9 @@ dolphin:
 
 down:
 	docker rm --force \
-		carepay_engelanna-airflow_scheduler-1 \
 		carepay_engelanna-airflow_metadata_db-1 \
+		carepay_engelanna-airflow_scheduler-1 \
+		carepay_engelanna-airflow_webserver-1 \
 		carepay_engelanna-dbt-1 \
 		carepay_engelanna-transactional_db-1 \
 		carepay_engelanna-warehouse-1

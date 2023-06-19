@@ -1,2 +1,2 @@
-from .stage_a_table import stage_a_table
-from .move_a_table_from_staging_to_core import move_a_table_from_staging_to_core
+from .import_table_into_staging import import_table_into_staging
+from .move_table_from_staging_to_core import move_table_from_staging_to_core
