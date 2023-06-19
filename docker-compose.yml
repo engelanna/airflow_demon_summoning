@@ -36,3 +36,13 @@ services:
     network_mode: host
     volumes:
       - ./dags:/opt/airflow/dags
+
+  dbt:
+    entrypoint: "/usr/bin/tail -f /dev/null"
+    environment:
+      - WAREHOUSE_DB_PASSWORD
+    image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
+    network_mode: host
+    volumes:
+      - ./dbt/profiles.yml:/root/.dbt/profiles.yml
+      - ./dbt/dbt_project.yml:/usr/app/dbt/dbt_project.yml
