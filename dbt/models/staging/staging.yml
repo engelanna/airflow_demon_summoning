@@ -4,10 +4,10 @@ sources:
   - name: staging
     description: Warehouse tables from the [staging] schema
     tables:
-      - name: claim
-      - name: invoice
-      - name: invoice_item
-      - name: treatment
+      - name: CLAIM
+      - name: INVOICE
+      - name: INVOICE_ITEM
+      - name: TREATMENT
 
 models:
   - name: staging__claims

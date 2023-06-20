@@ -1,6 +1,10 @@
-/* Keeps the column order from MySQL source, in order to get a clean load */
+/*
+    To avoid complexity & get a clean load, the script preserves the following from the its MySQL source:
+        - the table names (including capitalization)
+        - the column order
+*/
 
-create table staging.invoice_item (
+create table staging."INVOICE_ITEM" (
     id int primary key,
     status varchar(25),
     date_created timestamp,
@@ -10,14 +14,14 @@ create table staging.invoice_item (
     amount decimal(19,4)
 );
 
-create table staging.invoice (
+create table staging."INVOICE" (
     id int primary key,
     status varchar(25),
     date_created timestamp,
     treatment_id int
 );
 
-create table staging.claim (
+create table staging."CLAIM" (
     id int primary key,
     status varchar(25),
     type varchar(25),
@@ -29,7 +33,7 @@ create table staging.claim (
     currency varchar(4)
 );
 
-create table staging.treatment (
+create table staging."TREATMENT" (
     id int primary key,
     status varchar(25),
     date_created timestamp,

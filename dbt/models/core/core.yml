@@ -2,8 +2,9 @@ version: 2
 
 models:
   - name: core__claims
-    alias: claim
-    description: Claim, but with [date_created] coalesced from [staging.treatment]
+    config:
+      alias: claims
+    description: Claims, but with [date_created] coalesced from [staging.TREATMENT]
     tests:
       - dbt_utils.equal_rowcount:
           compare_model: ref("staging__claims")

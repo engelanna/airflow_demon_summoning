@@ -3,7 +3,7 @@
     Slices across dimensions are available, should we need it.
 */
 
-create table analytics.fct_claim_activity (
+create table analytics.fct_claims_activity (
     activity_date timestamp,
     activity_status varchar(25),
     amount decimal(19,4),
@@ -13,7 +13,7 @@ create table analytics.fct_claim_activity (
     id int primary key
 );
 
-create table analytics.fct_invoice_activity (
+create table analytics.fct_invoices_activity (
     activity_date timestamp,
     activity_status varchar(25),
     dim_invoice_id int,
@@ -21,7 +21,7 @@ create table analytics.fct_invoice_activity (
     id int primary key
 );
 
-create table analytics.fct_invoice_item_activity (
+create table analytics.fct_invoice_items_activity (
     activity_date timestamp,
     activity_status varchar(25),
     amount decimal(19,4),
@@ -32,7 +32,7 @@ create table analytics.fct_invoice_item_activity (
     id int primary key
 );
 
-create table analytics.fct_treatment_activity (
+create table analytics.fct_treatments_activity (
     activity_date timestamp,
     activity_status varchar(25),
     dim_program_id int,

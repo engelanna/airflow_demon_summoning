@@ -13,5 +13,5 @@ def import_table_into_staging(table_name: str):
 
     postgres_hook.insert_rows(
         rows=mysql_hook.get_records(f"SELECT * FROM {table_name}"),
-        table=f"staging.{table_name.lower()}",
+        table=f'staging."{table_name}"',
     )
