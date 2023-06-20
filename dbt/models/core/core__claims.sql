@@ -2,10 +2,12 @@ with claims_source as (
     select *
     from {{ ref("staging__claims") }}
 ),
+
 treatments_source as (
     select *
     from {{ ref("staging__treatments") }}
 ),
+
 coalesce_date_created_from_treatment_table as (
     select
         c.id,
@@ -17,8 +19,10 @@ coalesce_date_created_from_treatment_table as (
         c.program_id,
         c.amount,
         c.currency
-    from claims_source c left join treatments_source t
-        on c.treatment_id = t.id
+    from claims_source c
+    left join treatments_source t
+    on c.treatment_id = t.id
 )
+
 select *
 from coalesce_date_created_from_treatment_table

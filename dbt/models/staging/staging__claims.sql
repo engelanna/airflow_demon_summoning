@@ -1,4 +1,7 @@
-with source as (
-	select * from {{ source("staging", "CLAIM") }}
+with claims_source as (
+	select *
+	from {{ source("staging", "CLAIM") }}
 )
-select * from source
+
+select *
+from claims_source

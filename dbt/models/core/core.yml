@@ -1,15 +1,44 @@
 version: 2
 
 models:
+
   - name: core__claims
+    description: staging__claims with .date_created coalesced from staging__treatments
     config:
       alias: claims
-    description: Claims, but with [date_created] coalesced from [staging.TREATMENT]
-    tests:
-      - dbt_utils.equal_rowcount:
-          compare_model: ref("staging__claims")
-          severity: error
-  # - name: cor__invoices
-  # - name: cor__invoice_items
-  # - name: cor__treatments
+      indexes:
+        - columns: [id]
+          unique: true
+        - columns: [date_created]
+        - columns: [date_modified]
+  
+  - name: core__invoices
+    description: staging__invoices with .date_created coalesced from staging__treatments
+    config:
+      alias: invoices
+      indexes:
+        - columns: [id]
+          unique: true
+        - columns: [date_created]
+
+  - name: core__invoice_items
+    description: staging__invoice_items with .date_created coalesced from staging__treatments
+    config:
+      alias: invoice_items
+      indexes:
+        - columns: [id]
+          unique: true
+        - columns: [date_created]
+
+  - name: core__treatments
+    description: staging__treatments, indexed
+    config:
+      alias: treatments
+      indexes:
+        - columns: [id]
+          unique: true
+        - columns: [date_created]
+        - columns: [date_modified]
+        - columns: [date_submitted]
+        - columns: [date_treatment]
 

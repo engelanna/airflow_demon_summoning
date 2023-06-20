@@ -1,15 +1,16 @@
-name: "carepay_engelanna"
-version: "1.0.0"
+name: carepay_engelanna
+version: 1.0.0
 config-version: 2
 
-profile: "carepay_engelanna"
+profile: carepay_engelanna
 
-target-path: "target"
+target-path: target
 clean-targets: [target, db_packages]
 
 models:
   carepay_engelanna:
       core:
         materialized: table
+
       staging:
         materialized: ephemeral
