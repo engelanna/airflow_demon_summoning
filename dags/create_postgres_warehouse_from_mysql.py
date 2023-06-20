@@ -1,10 +1,8 @@
 from airflow import DAG
+from airflow.operators.bash import BashOperator
 from datetime import datetime
 
-from tasks import (
-    import_table_into_staging,
-    run_dbt_transformations,
-)
+from tasks import import_table_into_staging
 
 
 with DAG(
@@ -17,4 +15,7 @@ with DAG(
         import_table_into_staging("INVOICE"),
         import_table_into_staging("INVOICE_ITEM"),
         import_table_into_staging("TREATMENT"),
-    ] >> run_dbt_transformations() 
+    ] >> BashOperator(
+        task_id="run_dbt_transformations",
+        bash_command="/usr/scripts/run_dbt_across_containers.sh "
+    )
