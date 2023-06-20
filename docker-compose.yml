@@ -10,26 +10,30 @@ services:
       - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD}
       - AIRFLOW_CONN_SOURCE_DB=mysql://root:${TRANSACTIONAL_DB_PASSWORD}@0.0.0.0:3306/carepay
       - AIRFLOW_CONN_TARGET_WAREHOUSE=postgresql://postgres:${WAREHOUSE_DB_PASSWORD}@0.0.0.0:5432/postgres
     image: apache/airflow:2.6.1
     network_mode: host
     volumes:
       - ./dags:/opt/airflow/dags
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/bash:/usr/scripts
 
-  # airflow_webserver:
-  #   command: bash -c "airflow db init &&
-  #                     airflow users create --role Admin --username admin --password ${AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD} --email admin@example.com --firstname _ --lastname _ &&
-  #                     airflow webserver"
-  #   depends_on:
-  #     - airflow_metadata_db
-  #   environment:
-  #     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-  #     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
-  #     - AIRFLOW__WEBSERVER__AUTHENTICATE=True
-  #     - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD
-  #   image: apache/airflow:2.6.1
-  #   network_mode: host
+  airflow_webserver:
+    command: bash -c "airflow db init &&
+                      airflow users create --role Admin --username admin --password ${AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD} --email admin@example.com --firstname _ --lastname _ &&
+                      airflow webserver"
+    depends_on:
+      - airflow_metadata_db
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:${AIRFLOW_METADATA_DB_PASSWORD}@0.0.0.0:5433/airflow
+      - AIRFLOW__WEBSERVER__AUTHENTICATE=True
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD}
+    image: apache/airflow:2.6.1
+    network_mode: host
 
   airflow_metadata_db:
     environment:
