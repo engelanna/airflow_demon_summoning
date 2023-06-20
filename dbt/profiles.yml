@@ -5,7 +5,7 @@ carepay_engelanna:
       host: localhost
       pass: "{{ env_var('WAREHOUSE_DB_PASSWORD') }}"
       port: 5432
-      schema: staging
+      schema: core
       user: postgres
       type: postgres
   target: dev

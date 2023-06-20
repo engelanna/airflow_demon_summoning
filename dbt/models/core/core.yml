@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: core__claims
+    alias: claim
+    description: Claim, but with [date_created] coalesced from [staging.treatment]
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref("staging__claims")
+          severity: error
+  # - name: cor__invoices
+  # - name: cor__invoice_items
+  # - name: cor__treatments
+

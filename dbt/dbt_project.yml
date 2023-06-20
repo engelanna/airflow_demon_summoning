@@ -4,6 +4,12 @@ config-version: 2
 
 profile: "carepay_engelanna"
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:
-    - "target"
+target-path: "target"
+clean-targets: [target, db_packages]
+
+models:
+  carepay_engelanna:
+      core:
+        materialized: table
+      staging:
+        materialized: ephemeral

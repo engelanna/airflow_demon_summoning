@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: staging
+    description: Warehouse tables from the [staging] schema
+    tables:
+      - name: claim
+      - name: invoice
+      - name: invoice_item
+      - name: treatment
+
+models:
+  - name: staging__claims
+  - name: staging__invoices
+  - name: staging__invoice_items
+  - name: staging__treatments
