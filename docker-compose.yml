@@ -41,14 +41,14 @@ services:
       - "5433:5432"
 
   dbt:
-    entrypoint: "/usr/bin/tail -f /dev/null"
+    entrypoint: sh -c "dbt deps && /usr/bin/tail -f /dev/null"
     environment:
       - WAREHOUSE_DB_PASSWORD
+      - DBT_PROFILES_DIR=/usr/app/dbt
     image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
     network_mode: host
     volumes:
-      - ./dbt/profiles.yml:/root/.dbt/profiles.yml
-      - ./dbt/dbt_project.yml:/usr/app/dbt/dbt_project.yml
+      - ./dbt:/usr/app/dbt
 
   transactional_db:
     environment:
@@ -59,7 +59,7 @@ services:
       - "3306:3306"
     volumes:
       - ./data:/var/lib/data
-      - ./scripts/mysql:/docker-entrypoint-initdb.d/
+      - ./scripts/mysql:/docker-entrypoint-initdb.d
 
   warehouse:
     environment:
@@ -70,4 +70,4 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./scripts/postgres:/docker-entrypoint-initdb.d/
+      - ./scripts/postgres:/docker-entrypoint-initdb.d

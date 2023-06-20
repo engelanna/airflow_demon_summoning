@@ -1,12 +1,11 @@
 carepay_engelanna:
-  target: dev
   outputs:
     dev:
-      type: postgres
-      host: localhost
-      port: 5432
-      user: postgres
-      pass: "{{ env_var('WAREHOUSE_DB_PASSWORD') }}"
       dbname: postgres
-      schema: core  # dbt will build objects here
-
+      host: localhost
+      pass: "{{ env_var('WAREHOUSE_DB_PASSWORD') }}"
+      port: 5432
+      schema: staging
+      user: postgres
+      type: postgres
+  target: dev
