@@ -12,7 +12,10 @@ coalesce_date_created_from_treatment_table as (
     select
         i.id,
         i.status,
-        coalesce(i.date_created, t.date_created) as date_created,
+        coalesce(
+            i.date_created,
+            t.date_created
+        ) as date_created,
         i.treatment_id
     from invoices_source i
     left join treatments_source t
