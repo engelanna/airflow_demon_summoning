@@ -2,6 +2,10 @@
 ##### Anna Engel's implementation
 <hr>
 
+**Architecture diagram**
+![Architecture diagram](https://raw.githubusercontent.com/engelanna/carepay_engelanna/bd34f0e271ab34488546d5c992f610139b1a5f40/show_and_tell/005_architecture_overview.svg?token=ADKPBCKBRTXIVLSLGRLEIFTESMHMC)
+
+
 ## The approach
 - _We make the complex simple_ @ [What CarePay values](https://www.carepay.com/careers-at-carepay)
 - data matters more than infra
