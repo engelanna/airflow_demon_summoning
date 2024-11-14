@@ -1,5 +1,5 @@
 # Airflow demon summoning
-##### Warp in a local Airflow cluster + 2 databases
+##### Warp in an Airflow cluster + 2 databases (source, target) + dbt cleaning scripts
 <hr>
 
 **Architecture diagram**
