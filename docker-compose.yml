@@ -1,4 +1,3 @@
-version: "3"
 services:
   airflow_scheduler:
     command: bash -c "airflow db init && airflow scheduler"
