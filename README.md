@@ -55,7 +55,7 @@ or
 ```
 <hr>
 
-## Theory behind 
+## Discussion
 
 #### Tool choices
   - the Airflow scheduler (and nothing else from the Airflow ecosystem)
