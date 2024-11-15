@@ -1,7 +1,9 @@
 # Airflow demon summoning
 ##### Warp in an Airflow cluster + 2 databases (source, sink) + start moving data from source to sink
-- source / MySQL / populated by `dbt` from **CSV** / use `make dolphin` to browse
-- sink / PostgreSQL / populated by `dbt` from **source** / use `make elephant` to browse
+- _source_ (MySQL) populated from `.csv` by `dbt`
+  - use `make dolphin` to browse
+- _sink_ (PostgreSQL) populated from _source_ by Airflow
+  - use `make elephant` to browse
   - is an example of a Kimball schema
   - is an example of Medallion architecture
 - see http://localhost:8080 for Airflow (`admin` / password in `.env`)
