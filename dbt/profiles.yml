@@ -1,4 +1,4 @@
-airflow-demon-summoning:
+airflow_demon_summoning:
   outputs:
     dev:
       dbname: postgres

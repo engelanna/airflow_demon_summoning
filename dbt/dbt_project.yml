@@ -1,14 +1,14 @@
-name: airflow-demon-summoning
+name: airflow_demon_summoning
 version: 1.0.0
 config-version: 2
 
-profile: airflow-demon-summoning
+profile: airflow_demon_summoning
 
 target-path: target
 clean-targets: [target, db_packages]
 
 models:
-  airflow-demon-summoning:
+  airflow_demon_summoning:
       core:
         materialized: table
 
