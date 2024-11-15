@@ -1,5 +1,9 @@
 # Airflow demon summoning
-##### Warp in an Airflow cluster + 2 databases (source, target) + dbt cleaning scripts
+##### Warp in an Airflow cluster + 2 databases (source, sink) + push data from source to sink
+- source / MySQL / populated by `dbt` from **CSV** / use `make dolphin` to browse
+- sink / PostgreSQL / populated by `dbt` from **source** / use `make elephant` to browse
+  - is an example of a Kimball schema
+  - is an example of Medallion architecture
 <hr>
 
 **Architecture diagram**
@@ -12,18 +16,6 @@
   - `5432` for PostgreSQL
 <hr>
 
-## The approach
-- the warehouse (= target DB) has been split into **schemas** à la _Data Vault_:
-  - `staging` is just the landing area
-    - no partitoning since the the ingress is a smallish one-off
-  - `core` is indexed via:
-    - PKs
-    - B-tree indexes on `timestamp` columns (a favourite of the analysts I know)
-  - `analytics` has just the schema
-    - but withhold your judgement until you've seen it ([1](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/007_create_analytics_schema_standard_dimensions.sql), [2](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/008_create_analytics_schema_activity_tables.sql), [3](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/009_create_analytics_schema_shared_dimensions.sql)), especially if you like Kimball's dimensional modelling.
-<hr>
-
-
 ## Install & run
 ```bash
   git clone https://github.com/engelanna/airflow_demon_summoning.git
@@ -33,14 +25,6 @@
   make up
 ```
 <hr>
-
-## Inspect databases
-
-Schemas can be seen right away. Data is available as soon as the terminal stops scrolling.
-```bash
-make dolphin  # peek into MySQL
-make elephant  # peek into PostgreSQL
-```
 
 ## Uninstall & cleanup
 ```bash
@@ -55,16 +39,15 @@ or
 ```
 <hr>
 
-## Discussion
-
-#### Tool choices
-  - the Airflow scheduler (and nothing else from the Airflow ecosystem)
-    - just a data shovel, no bells and whistles
-  - `docker-compose:` for system reproducilibility
-  - `postgres:`
-    - ease of setup
-    - transformable into a columnar database with the `cstore_fdw` extension
-    - `lift-and-shift`-able unto Redshift (Redshift is based off of `postgres`).
+## Warehouse architecture
+- 3 **schemas**:
+  - `staging` is just the landing area
+  - `core` is indexed via:
+    - PKs
+    - B-tree indexes on `timestamp` columns (a favourite of the analysts I know)
+  - `analytics` has just the schema
+    - but withhold your judgement until you've seen it ([1](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/007_create_analytics_schema_standard_dimensions.sql), [2](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/008_create_analytics_schema_activity_tables.sql), [3](https://github.com/engelanna/airflow_demon_summoning/blob/main/scripts/postgres/009_create_analytics_schema_shared_dimensions.sql)), especially if you like Kimball's dimensional modelling.
+<hr>
 
 #### Structuring of the data in the single source of truth system - why does this structure lead to easy and low latency queries?
   - it's a star schema (introduced by Ralph Kimball), i.e. it's denormalized = forgoing the three database normal forms
@@ -78,11 +61,11 @@ or
   - another way of putting the above is "storage is cheaper than compute".
 
 #### What to change in order to bring this into production
-  - change the Airflow executor to something other than `Sequential`, it pains me to look at the speed, this needs a Redis or a second PostgreSQL-like DB
-  - introduce partitioning and upserts (currently just inserts, which are fine for a one-off load)
-  - use columnar indexes in the analytics schema (+vectorization: faster data operations +same data type: better compression, so cheaper compute)
-  - use Snowflake + dbt_cloud for [`dev vs prod vs pull_request`] schema separation, I actually tried go guess your setup based on the job description, the diagram is [here](https://github.com/engelanna/airflow_demon_summoning/assets/13955209/4cbdbe07-2b9a-468f-a183-b529fc42bcb5)
-  - clean the data using dbt (I love its testing capabilities using pure SQL)instead of my smart hack (described below) => build it automatically using dbt cloud
-  - [do you like DAGs?](https://pbs.twimg.com/media/Eo_sms-W8AI7gbL.jpg) People really like my Python; peek around.
+  - change the Airflow executor to something other than `Sequential`
+  - staging area needs to handle incremental updates (add columns: load id + loaded at + load type + loaded using)
+    - for a simpler solution, consider upserting by id 
+  - think about your partitioning (when in doubt, go with datetimes)
+     use columnar indexes in the analytics schema (+vectorization: faster data operations +same data type: better compression, so cheaper compute)
+  - use dbt_cloud for [`dev vs prod vs pull_request`] schema separation
 
 <hr>
