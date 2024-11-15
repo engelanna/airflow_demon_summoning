@@ -1,14 +1,14 @@
-name: carepay_engelanna
+name: airflow-demon-summoning
 version: 1.0.0
 config-version: 2
 
-profile: carepay_engelanna
+profile: airflow-demon-summoning
 
 target-path: target
 clean-targets: [target, db_packages]
 
 models:
-  carepay_engelanna:
+  airflow-demon-summoning:
       core:
         materialized: table
 

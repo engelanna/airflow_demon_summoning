@@ -1,4 +1,4 @@
-carepay_engelanna:
+airflow-demon-summoning:
   outputs:
     dev:
       dbname: postgres
