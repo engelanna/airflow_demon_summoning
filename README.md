@@ -1,5 +1,17 @@
 # Airflow demon summoning
 ##### Warp in an Airflow cluster + 2 databases + do an automatic raw load
+
+## JUST THIS and you're up and running
+```bash
+  git clone https://github.com/engelanna/airflow_demon_summoning.git
+  cd airflow_demon_summoning
+
+  wget https://tinyurl.com/wzxa3zh3 --output-document .env  # passwords
+  make up
+```
+<hr>
+
+## Overview
 - _source_ (MySQL) populated from `.csv` by `dbt`
   - `make dolphin` to browse
 - _sink_ (PostgreSQL) populated from _source_ by Airflow
@@ -17,16 +29,6 @@
 - unoccupied `localhost` ports:
   - `3306` for MySQL
   - `5432` for PostgreSQL
-<hr>
-
-## Install & run
-```bash
-  git clone https://github.com/engelanna/airflow_demon_summoning.git
-  cd airflow_demon_summoning
-
-  wget https://tinyurl.com/wzxa3zh3 --output-document .env  # passwords
-  make up
-```
 <hr>
 
 ## Uninstall & cleanup
