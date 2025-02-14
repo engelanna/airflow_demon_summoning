@@ -7,7 +7,7 @@
   cd airflow_demon_summoning
 
   wget https://tinyurl.com/wzxa3zh3 --output-document .env  # passwords
-  make up
+  make up  # fallbacks: docker compose up, docker-compose up
 ```
 <hr>
 
