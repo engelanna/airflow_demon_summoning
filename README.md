@@ -1,5 +1,5 @@
 # Airflow demon summoning
-##### Warp in an Airflow cluster + 2 databases + do an automatic raw load
+##### Warp in an Airflow cluster + 2 databases + do a full load between the DBs
 
 ## JUST this & you're up and running
 ```bash
